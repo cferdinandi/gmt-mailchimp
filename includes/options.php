@@ -37,6 +37,14 @@
 		<?php
 	}
 
+	function mailchimp_settings_field_honeypot() {
+		$options = mailchimp_get_theme_options();
+		?>
+		<input type="text" name="mailchimp_theme_options[honeypot]" class="regular-text" id="mailchimp_honeypot" value="<?php echo esc_attr( $options['honeypot'] ); ?>" />
+		<label class="description" for="mailchimp_honeypot"><?php _e( 'Honeypot class', 'mailchimp' ); ?></label>
+		<?php
+	}
+
 
 
 	/**
@@ -51,6 +59,7 @@
 		$defaults = array(
 			'mailchimp_api_key' => '',
 			'mailchimp_list_id' => '',
+			'honeypot' => '',
 		);
 
 		$defaults = apply_filters( 'mailchimp_default_theme_options', $defaults );
@@ -70,6 +79,9 @@
 
 		if ( isset( $input['mailchimp_list_id'] ) && ! empty( $input['mailchimp_list_id'] ) )
 			$output['mailchimp_list_id'] = wp_filter_nohtml_kses( $input['mailchimp_list_id'] );
+
+		if ( isset( $input['honeypot'] ) && ! empty( $input['honeypot'] ) )
+			$output['honeypot'] = wp_filter_nohtml_kses( $input['honeypot'] );
 
 		return apply_filters( 'mailchimp_theme_options_validate', $output, $input );
 	}
@@ -129,6 +141,7 @@
 		// $section - The section of the settings page in which to show the field.
 		add_settings_field( 'mailchimp_api_key', __( 'API Key', 'mailchimp' ), 'mailchimp_settings_field_mailchimp_api_key', 'mailchimp_options', 'mailchimp' );
 		add_settings_field( 'mailchimp_list_id', __( 'List ID', 'mailchimp' ), 'mailchimp_settings_field_mailchimp_list_id', 'mailchimp_options', 'mailchimp' );
+		add_settings_field( 'honeypot', __( 'Honeypot', 'mailchimp' ), 'mailchimp_settings_field_honeypot', 'mailchimp_options', 'mailchimp' );
 
 	}
 	add_action( 'admin_init', 'mailchimp_theme_options_init' );
