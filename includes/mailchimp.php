@@ -45,7 +45,7 @@
 				$tarpit .
 				'<div class="row">' .
 					'<div class="grid-two-thirds offset-third">' .
-						( empty( $status ) ? '' : '<p><em>' . esc_html( $status ) . '</em></p>' ) .
+						( empty( $status ) ? '' : '<p><em>' . esc_html( stripslashes( $status ) ) . '</em></p>' ) .
 					'</div>' .
 				'</div>' .
 				'<div class="row">' .
