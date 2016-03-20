@@ -19,12 +19,12 @@
 			// MailChimp Info
 			'category' => '',
 			'group' => '',
-			'label' => 'Subscribe',
 
 			// Alerts
 			'alert_bad_email' => 'Please use a valid email address.',
 			'alert_failed' => 'Well this is embarrassing... something went wrong. Please try again.',
-			'alert_success' => 'Almost finished... We just need to confirm your email address. To complete the subscription process, please click the link in the email we just sent you.',
+			'alert_pending' => 'Almost finished... We just need to confirm your email address. To complete the subscription process, please click the link in the email we just sent you.',
+			'alert_success' => 'Congrats! Your subscribed.',
 		);
 	}
 
@@ -127,33 +127,33 @@
 
 			<fieldset>
 
-				<p><?php _e( 'Shortcode', 'mailchimp' ) ?>: <code>[mailchimp id="<?php echo $post->ID; ?>"]</code></p>
+				<p><?php _e( 'Shortcode', 'mailchimp' ) ?>: <code>[mailchimp id="<?php echo $post->ID; ?>" label="Subscribe"]</code></p>
 
 				<?php mailchimp_metabox_field_category_id( $details ); ?>
 
 				<?php mailchimp_metabox_field_group_id( $details ); ?>
 
 				<div>
-					<label for="mailchimp_label"><?php _e( 'Label', 'mailchimp' ); ?></label>
-					<input type="text" class="regular-text" id="mailchimp_label" value="<?php echo esc_attr( $details['label'] ); ?>">
-				</div>
-				<br>
-
-				<div>
 					<label for="mailchimp_alert_bad_email"><?php _e( 'Alert: Bad Email', 'mailchimp' ); ?></label>
-					<input type="text" class="large-text" id="mailchimp_alert_bad_email" value="<?php echo esc_attr( $details['alert_bad_email'] ); ?>">
+					<input type="text" class="large-text" id="mailchimp_alert_bad_email" name="mailchimp[alert_bad_email]" value="<?php echo esc_attr( $details['alert_bad_email'] ); ?>">
 				</div>
 				<br>
 
 				<div>
 					<label for="mailchimp_alert_failed"><?php _e( 'Alert: Failed', 'mailchimp' ); ?></label>
-					<input type="text" class="large-text" id="mailchimp_alert_failed" value="<?php echo esc_attr( $details['alert_failed'] ); ?>">
+					<input type="text" class="large-text" id="mailchimp_alert_failed" name="mailchimp[alert_failed]" value="<?php echo esc_attr( $details['alert_failed'] ); ?>">
+				</div>
+				<br>
+
+				<div>
+					<label for="mailchimp_alert_pending"><?php _e( 'Alert: Pending', 'mailchimp' ); ?></label>
+					<input type="text" class="large-text" id="mailchimp_alert_pending" name="mailchimp[alert_pending]" value="<?php echo esc_attr( $details['alert_pending'] ); ?>">
 				</div>
 				<br>
 
 				<div>
 					<label for="mailchimp_alert_success"><?php _e( 'Alert: Success', 'mailchimp' ); ?></label>
-					<input type="text" class="large-text" id="mailchimp_alert_success" value="<?php echo esc_attr( $details['alert_success'] ); ?>">
+					<input type="text" class="large-text" id="mailchimp_alert_success" name="mailchimp[alert_success]" value="<?php echo esc_attr( $details['alert_success'] ); ?>">
 				</div>
 				<br>
 
