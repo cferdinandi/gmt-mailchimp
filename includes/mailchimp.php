@@ -150,7 +150,7 @@
 		// // Variables
 		$details = get_post_meta( $_POST['mailchimp_id'], 'mailchimp_details', true );
 		$referrer = mailchimp_get_url();
-		$status = $referrer . '#mailchimp-form-' . $_POST['mailchimp_id'];
+		$status = add_query_arg( 'mailchimp', 'status', $referrer ) . '#mailchimp-form-' . $_POST['mailchimp_id'];
 
 		// Make sure form has an ID
 		if ( !isset( $_POST['mailchimp_id'] ) ) {
