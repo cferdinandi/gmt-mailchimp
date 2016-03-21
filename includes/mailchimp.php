@@ -22,7 +22,7 @@
 
 		// Get options
 		$options = mailchimp_get_theme_options();
-		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . $options['honeypot'] . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="email" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value=""></div></div>';
+		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . $options['honeypot'] . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
 
 		$form =
 			'<form class="mailchimp-form" id="mailchimp-form-' . $mailchimp['id'] . '" name="mailchimp_form" action="" method="post">' .
@@ -171,7 +171,7 @@
 		}
 
 		// Timestamp honeypot
-		if ( !isset( $_POST['mailchimp_tarpit_time'] ) || current_time( 'timestamp' ) - $_POST['mailchimp_tarpit_time'] < 2 ) {
+		if ( !isset( $_POST['mailchimp_tarpit_time'] ) || current_time( 'timestamp' ) - $_POST['mailchimp_tarpit_time'] < 1 ) {
 			wp_safe_redirect( $referrer, 302 );
 			exit;
 		}
