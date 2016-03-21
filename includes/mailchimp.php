@@ -14,6 +14,7 @@
 
 		// Status
 		$status = mailchimp_get_session( 'mailchimp_status', true );
+		$success = mailchimp_get_session( 'mailchimp_success', true );
 		$name = mailchimp_get_session( 'mailchimp_fname', true );
 		$email = mailchimp_get_session( 'mailchimp_email', true );
 
@@ -24,7 +25,11 @@
 		$options = mailchimp_get_theme_options();
 		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . $options['honeypot'] . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
 
-		$form =
+		if ( $success ) {
+			return '<p><em>' . $status . '</em></p>';
+		}
+
+		return
 			'<form class="mailchimp-form" id="mailchimp-form-' . $mailchimp['id'] . '" name="mailchimp_form" action="" method="post">' .
 				'<div class="row">' .
 					'<div class="grid-third">' .
@@ -57,8 +62,6 @@
 					'</div>' .
 				'</div>' .
 			'</form>';
-
-		return $form;
 
 	}
 	add_shortcode( 'mailchimp', 'mailchimp_form' );
@@ -205,6 +208,7 @@
 		// If new member was added
 		if ( $signup === 'new' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_pending'], 'post' );
+			mailchimp_set_session( 'mailchimp_success', true );
 			wp_safe_redirect( $status, 302 );
 			exit;
 		}
@@ -212,6 +216,7 @@
 		// If existing user updated
 		if ( $signup === 'updated' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_success'], 'post' );
+			mailchimp_set_session( 'mailchimp_success', true );
 			wp_safe_redirect( $status, 302 );
 			exit;
 		}
