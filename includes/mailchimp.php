@@ -26,7 +26,7 @@
 		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . $options['honeypot'] . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
 
 		if ( $success ) {
-			return '<p id="mailchimp-form-' . $mailchimp['id'] . '"><em>' . $status . '</em></p>';
+			return '<p id="mailchimp-form-' . $mailchimp['id'] . '"><em>' . stripslashes( $status ) . '</em></p>';
 		}
 
 		return
