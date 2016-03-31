@@ -12,6 +12,9 @@
 			'label' => 'Subscribe',
 		), $atts );
 
+		// Prevent this content from caching
+		define('DONOTCACHEPAGE', TRUE);
+
 		// Status
 		$status = mailchimp_get_session( 'mailchimp_status', true );
 		$success = mailchimp_get_session( 'mailchimp_success', true );
@@ -153,7 +156,7 @@
 		// // Variables
 		$details = get_post_meta( $_POST['mailchimp_id'], 'mailchimp_details', true );
 		$referrer = mailchimp_get_url();
-		$status = add_query_arg( 'mailchimp', 'status', $referrer ) . '#mailchimp-form-' . $_POST['mailchimp_id'];
+		$status = $referrer . '#mailchimp-form-' . $_POST['mailchimp_id'];
 
 		// Make sure form has an ID
 		if ( !isset( $_POST['mailchimp_id'] ) ) {
