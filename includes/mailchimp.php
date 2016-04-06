@@ -78,7 +78,7 @@
 	function mailchimp_add_new_member_to_mailchimp( $form ) {
 
 		// Make sure username and email are provided
-		if ( empty( $form['fname'] ) || empty( $form['email'] ) ) return;
+		if ( empty( $form['fname'] ) && empty( $form['email'] ) ) return;
 
 		// Get MailChimp API variables
 		$options = mailchimp_get_theme_options();
