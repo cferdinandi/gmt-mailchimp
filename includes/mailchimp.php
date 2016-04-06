@@ -60,7 +60,7 @@
 					'<div class="grid-two-thirds offset-third">' .
 						'<input type="hidden" name="mailchimp_id" value="' . $mailchimp['id'] . '">' .
 						'<input type="hidden" id="mailchimp_tarpit_time" name="mailchimp_tarpit_time" value="' . current_time( 'timestamp' ) . '">' .
-						wp_nonce_field( 'mailchimp_form_nonce', 'mailchimp_form_process' ) .
+						wp_nonce_field( 'mailchimp_form_nonce', 'mailchimp_form_process', true, false ) .
 						'<button class="btn">' . $mailchimp['label'] . '</button>' .
 					'</div>' .
 				'</div>' .
@@ -223,6 +223,13 @@
 			wp_safe_redirect( $status, 302 );
 			exit;
 		}
+
+		// If sign up fails, throw error
+		mailchimp_set_session( 'mailchimp_status', $details['alert_bad_email'], 'post' );
+		mailchimp_set_session( 'mailchimp_fname', $_POST['mailchimp_fname'], 'post' );
+		mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
+		wp_safe_redirect( $status, 302 );
+		exit;
 
 	}
 	add_action( 'init', 'mailchimp_process_form' );
