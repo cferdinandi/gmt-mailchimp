@@ -25,6 +25,7 @@
 			'alert_failed' => 'Well this is embarrassing... something went wrong. Please try again.',
 			'alert_pending' => 'Almost finished... We just need to confirm your email address. To complete the subscription process, please click the link in the email we just sent you.',
 			'alert_success' => 'Congrats! You\'re subscribed.',
+
 		);
 	}
 
