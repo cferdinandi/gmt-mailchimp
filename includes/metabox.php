@@ -14,9 +14,11 @@
 	 * Create the metabox default values
 	 */
 	function mailchimp_metabox_defaults() {
+		$options = mailchimp_get_theme_options();
 		return array(
 
 			// MailChimp Info
+			'list_id' => $options['mailchimp_list_id'],
 			'category' => '',
 			'group' => '',
 
