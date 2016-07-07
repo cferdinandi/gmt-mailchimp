@@ -38,11 +38,11 @@
 	 * @param  string $group The group ID
 	 * @return array         Data from the MailChimp API
 	 */
-	function mailchimp_metabox_get_mailchimp_data( $group = null ) {
+	function mailchimp_metabox_get_mailchimp_data( $list_id, $group = null ) {
 
 		$options = mailchimp_get_theme_options();
 
-		if ( empty( $options['mailchimp_api_key'] ) || empty( $options['mailchimp_list_id'] ) ) return;
+		if ( empty( $options['mailchimp_api_key'] ) || empty( $list_id ) ) return;
 
 		// Create API call
 		$shards = explode( '-', $options['mailchimp_api_key'] );
@@ -76,7 +76,7 @@
 	 * @param  array $details  Saved data
 	 */
 	function mailchimp_metabox_field_category_id( $details ) {
-		$mailchimp = mailchimp_metabox_get_mailchimp_data();
+		$mailchimp = mailchimp_metabox_get_mailchimp_data( $details['list_id'] );
 		?>
 		<div>
 			<label for="mailchimp_category"><?php _e( 'Category', 'mailchimp' ); ?></label>
@@ -98,7 +98,7 @@
 	 * @param  array $details  Saved data
 	 */
 	function mailchimp_metabox_field_group_id( $details ) {
-		$mailchimp = mailchimp_metabox_get_mailchimp_data( $details['category'] );
+		$mailchimp = mailchimp_metabox_get_mailchimp_data( $details['list_id'], $details['category'] );
 		?>
 		<div>
 			<label for="mailchimp_group"><?php _e( 'Group', 'mailchimp' ); ?></label>
@@ -131,6 +131,12 @@
 			<fieldset>
 
 				<p><?php _e( 'Shortcode', 'mailchimp' ) ?>: <code>[mailchimp id="<?php echo $post->ID; ?>" label="Subscribe"]</code></p>
+
+				<div>
+					<label for="mailchimp_list_id"><?php _e( 'List ID', 'mailchimp' ); ?></label>
+					<input type="text" class="large-text" id="mailchimp_list_id" name="mailchimp[list_id]" value="<?php echo esc_attr( $details['list_id'] ); ?>">
+				</div>
+				<br>
 
 				<?php mailchimp_metabox_field_category_id( $details ); ?>
 
