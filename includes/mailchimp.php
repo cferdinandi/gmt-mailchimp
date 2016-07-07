@@ -62,14 +62,14 @@
 	function mailchimp_add_new_member_to_mailchimp( $form ) {
 
 		// Make sure email is provided
-		if ( empty( $form['email'] ) ) return;
+		if ( empty( $form['email'] ) || !is_array( $form['details'] ) || !array_key_exists( 'list_id', $form['details'] ) ) return;
 
 		// Get MailChimp API variables
 		$options = mailchimp_get_theme_options();
 
 		// Create API call
 		$shards = explode( '-', $options['mailchimp_api_key'] );
-		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $options['mailchimp_list_id'] . '/members';
+		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $form['details']['list_id'] . '/members';
 		$params = array(
 			'headers' => array(
 				'Authorization' => 'Basic ' . base64_encode( 'mailchimp' . ':' . $options['mailchimp_api_key'] )
@@ -77,7 +77,7 @@
 			'body' => json_encode(array(
 				'status' => 'pending',
 				'email_address' => $form['email'],
-				'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? '' : array( $form['details']['group'] => true ) ),
+				'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
 			)),
 		);
 
@@ -96,7 +96,7 @@
 				),
 				'method' => 'PUT',
 				'body' => json_encode(array(
-					'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? '' : array( $form['details']['group'] => true ) ),
+					'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
 				)),
 			);
 			$request = wp_remote_post( $url, $params );
