@@ -161,7 +161,7 @@
 		}
 
 		// If email is invalid
-		if ( !is_email( $_POST['mailchimp_email'] ) ) {
+		if ( empty( filter_var( $_POST['mailchimp_email'], FILTER_VALIDATE_EMAIL ) ) ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_bad_email'], 'post' );
 			mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
 			wp_safe_redirect( $status, 302 );
