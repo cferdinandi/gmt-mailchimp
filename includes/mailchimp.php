@@ -200,7 +200,7 @@
 		}
 
 		// If sign up fails, throw error
-		mailchimp_set_session( 'mailchimp_status', $details['alert_bad_email'], 'post' );
+		mailchimp_set_session( 'mailchimp_status', $details['alert_failed'], 'post' );
 		mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
 		wp_safe_redirect( $status, 302 );
 		exit;
