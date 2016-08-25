@@ -130,7 +130,11 @@
 
 			<fieldset>
 
-				<p><?php _e( 'Shortcode', 'mailchimp' ) ?>: <code>[mailchimp id="<?php echo $post->ID; ?>" label="Subscribe"]</code></p>
+				<div>
+					<label for="mailchimp_shortcode"><?php _e( 'Shortcode', 'mailchimp' ); ?></label>
+					<input type="text" class="large-text" id="mailchimp_shortcode" name="mailchimp_shortcode" value="<?php echo esc_attr( '[mailchimp id="' . $post->ID . '" label="Subscribe" placeholder=""]' ); ?>" readonly="readonly">
+				</div>
+				<br>
 
 				<div>
 					<label for="mailchimp_list_id"><?php _e( 'List ID', 'mailchimp' ); ?></label>
