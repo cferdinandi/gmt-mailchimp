@@ -67,6 +67,16 @@
 		// Get MailChimp API variables
 		$options = mailchimp_get_theme_options();
 
+		// Create interest groups array
+		if ( empty( $form['details']['interests'] ) ) {
+			$interests = new stdClass();
+		} else {
+			$interests = array();
+			foreach ( $form['details']['interests'] as $key => $group ) {
+				$interests[$key] = true;
+			}
+		}
+
 		// Create API call
 		$shards = explode( '-', $options['mailchimp_api_key'] );
 		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $form['details']['list_id'] . '/members';
@@ -77,7 +87,7 @@
 			'body' => json_encode(array(
 				'status' => 'pending',
 				'email_address' => $form['email'],
-				'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
+				'interests' => $interests,
 			)),
 		);
 
@@ -96,7 +106,7 @@
 				),
 				'method' => 'PUT',
 				'body' => json_encode(array(
-					'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
+					'interests' => $interests,
 				)),
 			);
 			$request = wp_remote_post( $url, $params );
