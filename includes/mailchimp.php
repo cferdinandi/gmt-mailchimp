@@ -26,7 +26,7 @@
 
 		// Get options
 		$options = mailchimp_get_theme_options();
-		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . esc_attr( $options['honeypot'] ) . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
+		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="mailchimp-form-row ' . esc_attr( $options['honeypot'] ) . '"><div class="mailchimp-form-grid-label"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="mailchimp-form-grid-input"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
 
 		if ( $success ) {
 			return '<p id="mailchimp-form-' . esc_attr( $mailchimp['id'] ) . '"><em>' . stripslashes( $status ) . '</em></p>';
@@ -38,13 +38,13 @@
 				'<input type="hidden" id="mailchimp_tarpit_time" name="mailchimp_tarpit_time" value="' . esc_attr( current_time( 'timestamp' ) ) . '">' .
 				$tarpit .
 				wp_nonce_field( 'mailchimp_form_nonce', 'mailchimp_form_process', true, false ) .
-				'<label class="' . esc_attr( $options['label_class'] ) . '" for="mailchimp_email">' . __( 'Email Address', 'mailchimp' ) . '</label>' .
-				'<div class="row">' .
-					'<div class="grid-two-thirds">' .
-						'<input type="email" id="mailchimp_email" name="mailchimp_email" value="' . esc_attr( $email ) . '" placeholder="' . esc_attr( $mailchimp['placeholder'] ) . '" required>' .
+				'<label class="mailchimp-form-label" for="mailchimp_email">' . __( 'Email Address', 'mailchimp' ) . '</label>' .
+				'<div class="mailchimp-form-row">' .
+					'<div class="mailchimp-form-grid-input">' .
+						'<input type="email" class="mailchimp-form-input" id="mailchimp_email" name="mailchimp_email" value="' . esc_attr( $email ) . '" placeholder="' . esc_attr( $mailchimp['placeholder'] ) . '" required>' .
 					'</div>' .
-					'<div class="grid-third">' .
-						'<button class="btn btn-block">' . $mailchimp['label'] . '</button>' .
+					'<div class="mailchimp-form-grid-button">' .
+						'<button class="mailchimp-form-button">' . $mailchimp['label'] . '</button>' .
 					'</div>' .
 				'</div>' .
 				( empty( $status ) ? '' : '<p><em>' . esc_html( stripslashes( $status ) ) . '</em></p>' ) .

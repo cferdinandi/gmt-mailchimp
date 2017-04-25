@@ -37,22 +37,6 @@
 		<?php
 	}
 
-	function mailchimp_settings_field_label_class() {
-		$options = mailchimp_get_theme_options();
-		?>
-		<input type="text" name="mailchimp_theme_options[label_class]" class="regular-text" id="mailchimp_label_class" value="<?php echo esc_attr( $options['label_class'] ); ?>" />
-		<label class="description" for="mailchimp_label_class"><?php _e( 'Email label class', 'mailchimp' ); ?></label>
-		<?php
-	}
-
-	function mailchimp_settings_field_button_class() {
-		$options = mailchimp_get_theme_options();
-		?>
-		<input type="text" name="mailchimp_theme_options[button_class]" class="regular-text" id="mailchimp_button_class" value="<?php echo esc_attr( $options['button_class'] ); ?>" />
-		<label class="description" for="mailchimp_button_class"><?php _e( 'Button class', 'mailchimp' ); ?></label>
-		<?php
-	}
-
 	function mailchimp_settings_field_honeypot_class() {
 		$options = mailchimp_get_theme_options();
 		?>
@@ -75,8 +59,6 @@
 		$defaults = array(
 			'mailchimp_api_key' => '',
 			'mailchimp_list_id' => '',
-			'label_class' => 'screen-reader',
-			'button_class' => 'btn',
 			'honeypot' => '',
 		);
 
@@ -97,12 +79,6 @@
 
 		if ( isset( $input['mailchimp_list_id'] ) && ! empty( $input['mailchimp_list_id'] ) )
 			$output['mailchimp_list_id'] = wp_filter_nohtml_kses( $input['mailchimp_list_id'] );
-
-		if ( isset( $input['label_class'] ) && ! empty( $input['label_class'] ) )
-			$output['label_class'] = wp_filter_nohtml_kses( $input['label_class'] );
-
-		if ( isset( $input['button_class'] ) && ! empty( $input['button_class'] ) )
-			$output['button_class'] = wp_filter_nohtml_kses( $input['button_class'] );
 
 		if ( isset( $input['honeypot'] ) && ! empty( $input['honeypot'] ) )
 			$output['honeypot'] = wp_filter_nohtml_kses( $input['honeypot'] );
@@ -165,8 +141,6 @@
 		// $section - The section of the settings page in which to show the field.
 		add_settings_field( 'mailchimp_api_key', __( 'API Key', 'mailchimp' ), 'mailchimp_settings_field_mailchimp_api_key', 'mailchimp_options', 'mailchimp' );
 		add_settings_field( 'mailchimp_list_id', __( 'List ID', 'mailchimp' ), 'mailchimp_settings_field_mailchimp_list_id', 'mailchimp_options', 'mailchimp' );
-		add_settings_field( 'label_class', __( 'Label Class', 'mailchimp' ), 'mailchimp_settings_field_label_class', 'mailchimp_options', 'mailchimp' );
-		add_settings_field( 'button_class', __( 'Button Class', 'mailchimp' ), 'mailchimp_settings_field_button_class', 'mailchimp_options', 'mailchimp' );
 		add_settings_field( 'honeypot', __( 'Honeypot', 'mailchimp' ), 'mailchimp_settings_field_honeypot_class', 'mailchimp_options', 'mailchimp' );
 
 	}
