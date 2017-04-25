@@ -190,16 +190,10 @@
 			return $post->ID;
 		}
 
-		// die(keel_print_a($_POST['mailchimp']));
-
 		// Sanitize all data
 		$sanitized = array();
 		$interests = array();
 		foreach ( $_POST['mailchimp'] as $key => $detail ) {
-			// if ( in_array( $key, array( 'date_start', 'date_end' ) ) ) {
-			// 	$sanitized[$key] = strtotime( $detail );
-			// 	continue;
-			// }
 			if ( $key === 'interest_groups' ) {
 				foreach ($detail as $group) {
 					$interests[$group] = 'on';
