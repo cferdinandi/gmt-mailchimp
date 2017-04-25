@@ -14,6 +14,7 @@
 // Define constants
 define( 'GMT_MAILCHIMP_VERSION', '2.0.0' );
 
+
 // Includes
 require_once( plugin_dir_path( __FILE__ ) . 'includes/wp-session-manager/wp-session-manager.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'includes/helpers.php' );
@@ -48,8 +49,6 @@ function gmt_mailchimp_check_version() {
 	if ( empty( $old_version ) || version_compare( $old_version, GMT_MAILCHIMP_VERSION, '<' ) ) {
 		update_site_option( 'gmt_mailchimp_version', GMT_MAILCHIMP_VERSION );
 	}
-
-	update_site_option( 'gmt_mailchimp_version', GMT_MAILCHIMP_VERSION );
 
 }
 add_action( 'plugins_loaded', 'gmt_mailchimp_check_version' );
