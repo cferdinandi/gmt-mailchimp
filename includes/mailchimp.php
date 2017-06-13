@@ -14,7 +14,9 @@
 		), $atts );
 
 		// Prevent this content from caching
-		define('DONOTCACHEPAGE', TRUE);
+		if (!empty($_GET['mc-status']) && !defined('DONOTCACHEPAGE')) {
+			define('DONOTCACHEPAGE', TRUE);
+		}
 
 		// Status
 		$status = mailchimp_get_session( 'mailchimp_status', true );
@@ -26,7 +28,7 @@
 
 		// Get options
 		$options = mailchimp_get_theme_options();
-		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="row ' . esc_attr( $options['honeypot'] ) . '"><div class="grid-third"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="grid-two-thirds"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
+		$tarpit = empty( $options['honeypot'] ) ? '' : '<div class="mailchimp-form-row ' . esc_attr( $options['honeypot'] ) . '"><div class="mailchimp-form-grid-label"><label for="mailchimp_email_confirm">If you are human, leave this blank</label></div><div class="mailchimp-form-grid-input"><input type="text" id="mailchimp_email_confirm" name="mailchimp_email_confirm" value="" autofill="off"></div></div>';
 
 		if ( $success ) {
 			return '<p id="mailchimp-form-' . esc_attr( $mailchimp['id'] ) . '"><em>' . stripslashes( $status ) . '</em></p>';
@@ -38,13 +40,13 @@
 				'<input type="hidden" id="mailchimp_tarpit_time" name="mailchimp_tarpit_time" value="' . esc_attr( current_time( 'timestamp' ) ) . '">' .
 				$tarpit .
 				wp_nonce_field( 'mailchimp_form_nonce', 'mailchimp_form_process', true, false ) .
-				'<label class="' . esc_attr( $options['label_class'] ) . '" for="mailchimp_email">' . __( 'Email Address', 'mailchimp' ) . '</label>' .
-				'<div class="row">' .
-					'<div class="grid-two-thirds">' .
-						'<input type="email" id="mailchimp_email" name="mailchimp_email" value="' . esc_attr( $email ) . '" placeholder="' . esc_attr( $mailchimp['placeholder'] ) . '" required>' .
+				'<label class="mailchimp-form-label" for="mailchimp_email">' . __( 'Email Address', 'mailchimp' ) . '</label>' .
+				'<div class="mailchimp-form-row">' .
+					'<div class="mailchimp-form-grid-input">' .
+						'<input type="email" class="mailchimp-form-input" id="mailchimp_email" name="mailchimp_email" value="' . esc_attr( $email ) . '" placeholder="' . esc_attr( $mailchimp['placeholder'] ) . '" required>' .
 					'</div>' .
-					'<div class="grid-third">' .
-						'<button class="btn btn-block">' . $mailchimp['label'] . '</button>' .
+					'<div class="mailchimp-form-grid-button">' .
+						'<button class="mailchimp-form-button">' . $mailchimp['label'] . '</button>' .
 					'</div>' .
 				'</div>' .
 				( empty( $status ) ? '' : '<p><em>' . esc_html( stripslashes( $status ) ) . '</em></p>' ) .
@@ -67,6 +69,16 @@
 		// Get MailChimp API variables
 		$options = mailchimp_get_theme_options();
 
+		// Create interest groups array
+		if ( empty( $form['details']['interests'] ) ) {
+			$interests = new stdClass();
+		} else {
+			$interests = array();
+			foreach ( $form['details']['interests'] as $key => $group ) {
+				$interests[$key] = true;
+			}
+		}
+
 		// Create API call
 		$shards = explode( '-', $options['mailchimp_api_key'] );
 		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $form['details']['list_id'] . '/members';
@@ -77,7 +89,7 @@
 			'body' => json_encode(array(
 				'status' => 'pending',
 				'email_address' => $form['email'],
-				'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
+				'interests' => $interests,
 			)),
 		);
 
@@ -96,10 +108,10 @@
 				),
 				'method' => 'PUT',
 				'body' => json_encode(array(
-					'interests' => ( !array_key_exists( 'group', $form['details'] ) || empty( $form['details']['group'] ) ? new stdClass() : array( $form['details']['group'] => true ) ),
+					'interests' => $interests,
 				)),
 			);
-			$request = wp_remote_post( $url, $params );
+			$request = wp_remote_request( $url, $params );
 			$response = wp_remote_retrieve_body( $request );
 
 			// If still pending, return "new" status again
@@ -164,7 +176,7 @@
 		if ( empty( filter_var( $_POST['mailchimp_email'], FILTER_VALIDATE_EMAIL ) ) ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_bad_email'], 'post' );
 			mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-			wp_safe_redirect( $status, 302 );
+			wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
 			exit;
 		}
 
@@ -179,7 +191,7 @@
 		if ( $signup === 'error' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_failed'], 'post' );
 			mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-			wp_safe_redirect( $status, 302 );
+			wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
 			exit;
 		}
 
@@ -187,7 +199,7 @@
 		if ( $signup === 'new' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_pending'], 'post' );
 			mailchimp_set_session( 'mailchimp_success', true );
-			wp_safe_redirect( $status, 302 );
+			wp_safe_redirect( add_query_arg('mc-status', 'success', $status), 302 );
 			exit;
 		}
 
@@ -195,14 +207,14 @@
 		if ( $signup === 'updated' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_success'], 'post' );
 			mailchimp_set_session( 'mailchimp_success', true );
-			wp_safe_redirect( $status, 302 );
+			wp_safe_redirect( add_query_arg('mc-status', 'success', $status), 302 );
 			exit;
 		}
 
 		// If sign up fails, throw error
 		mailchimp_set_session( 'mailchimp_status', $details['alert_failed'], 'post' );
 		mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-		wp_safe_redirect( $status, 302 );
+		wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
 		exit;
 
 	}

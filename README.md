@@ -57,4 +57,4 @@ Please read the [Contribution Guidelines](CONTRIBUTING.md).
 
 ## License
 
-The code is available under the [MIT License](LICENSE.md).
+The code is available under the [GPLv3 License](LICENSE.md).

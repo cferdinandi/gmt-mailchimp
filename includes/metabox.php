@@ -19,8 +19,7 @@
 
 			// MailChimp Info
 			'list_id' => $options['mailchimp_list_id'],
-			'category' => '',
-			'group' => '',
+			'interests' => array(),
 
 			// Alerts
 			'alert_bad_email' => 'Please use a valid email address.',
@@ -46,7 +45,7 @@
 
 		// Create API call
 		$shards = explode( '-', $options['mailchimp_api_key'] );
-		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $list_id . '/interest-categories' . ( empty( $group ) ? '' : '/' . $group . '/interests' );
+		$url = 'https://' . $shards[1] . '.api.mailchimp.com/3.0/lists/' . $list_id . '/interest-categories' . ( empty( $group ) ? '' : '/' . $group . '/interests?count=99' );
 		$params = array(
 			'headers' => array(
 				'Authorization' => 'Basic ' . base64_encode( 'mailchimp' . ':' . $options['mailchimp_api_key'] )
@@ -72,45 +71,31 @@
 
 
 	/**
-	 * Create MailChimp category select
+	 * Render interest groups
 	 * @param  array $details  Saved data
 	 */
-	function mailchimp_metabox_field_category_id( $details ) {
-		$mailchimp = mailchimp_metabox_get_mailchimp_data( $details['list_id'] );
-		?>
-		<div>
-			<label for="mailchimp_category"><?php _e( 'Category', 'mailchimp' ); ?></label>
-			<select id="mailchimp_category" name="mailchimp[category]">
-				<option value="" <?php selected( '', $details['category'] ) ?>><?php _e( 'None', 'mailchimp' ); ?></option>
-				<?php foreach ( $mailchimp['categories'] as $key => $category ) : ?>
-					<option value="<?php echo esc_attr( $category['id'] ); ?>" <?php selected( $category['id'], $details['category'] ); ?>><?php echo esc_html( $category['title'] ); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</div>
-		<br>
-		<?php
-	}
+	function mailchimp_metabox_render_interest_groups( $details ) {
 
+		// Variables
+		$categories = mailchimp_metabox_get_mailchimp_data( $details['list_id'] );
+		$html = '';
 
+		foreach ( $categories['categories'] as $category ) {
+			$html .= '<h4>' . esc_html( $category['title'] ) . '</h4>';
+			$groups = mailchimp_metabox_get_mailchimp_data( $details['list_id'], $category['id'] );
 
-	/**
-	 * Create MailChimp group select
-	 * @param  array $details  Saved data
-	 */
-	function mailchimp_metabox_field_group_id( $details ) {
-		$mailchimp = mailchimp_metabox_get_mailchimp_data( $details['list_id'], $details['category'] );
-		?>
-		<div>
-			<label for="mailchimp_group"><?php _e( 'Group', 'mailchimp' ); ?></label>
-			<select id="mailchimp_group" name="mailchimp[group]">
-				<option value="" <?php selected( '', $details['group'] ) ?>><?php _e( 'None', 'mailchimp' ); ?></option>
-				<?php foreach ( $mailchimp['interests'] as $key => $interest ) : ?>
-					<option value="<?php echo esc_attr( $interest['id'] ); ?>" <?php selected( $interest['id'], $details['group'] ); ?>><?php echo esc_html( $interest['name'] ); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</div>
-		<br>
-		<?php
+			foreach ( $groups['interests'] as $group ) {
+				$html .=
+					'<label>' .
+						'<input type="checkbox" name="mailchimp[interest_groups][' . esc_attr( $group['id'] ) . ']" value="' . esc_attr( $group['id'] ) . '" ' . ( array_key_exists( $group['id'], $details['interests'] ) ? 'checked="checked"' : '' ) . '>' .
+						esc_html( $group['name'] ) .
+					'</label>' .
+					'<br>';
+			}
+
+		}
+
+		echo $html;
 	}
 
 
@@ -142,10 +127,6 @@
 				</div>
 				<br>
 
-				<?php mailchimp_metabox_field_category_id( $details ); ?>
-
-				<?php mailchimp_metabox_field_group_id( $details ); ?>
-
 				<div>
 					<label for="mailchimp_alert_bad_email"><?php _e( 'Alert: Bad Email', 'mailchimp' ); ?></label>
 					<input type="text" class="large-text" id="mailchimp_alert_bad_email" name="mailchimp[alert_bad_email]" value="<?php echo esc_attr( $details['alert_bad_email'] ); ?>">
@@ -169,6 +150,10 @@
 					<input type="text" class="large-text" id="mailchimp_alert_success" name="mailchimp[alert_success]" value="<?php echo esc_attr( $details['alert_success'] ); ?>">
 				</div>
 				<br>
+
+				<h3><?php _e( 'Interest Groups', 'mailchimp' ); ?></h3>
+
+				<?php mailchimp_metabox_render_interest_groups( $details ); ?>
 
 			</fieldset>
 
@@ -207,13 +192,17 @@
 
 		// Sanitize all data
 		$sanitized = array();
+		$interests = array();
 		foreach ( $_POST['mailchimp'] as $key => $detail ) {
-			// if ( in_array( $key, array( 'date_start', 'date_end' ) ) ) {
-			// 	$sanitized[$key] = strtotime( $detail );
-			// 	continue;
-			// }
+			if ( $key === 'interest_groups' ) {
+				foreach ($detail as $group) {
+					$interests[$group] = 'on';
+				}
+				continue;
+			}
 			$sanitized[$key] = wp_filter_post_kses( $detail );
 		}
+		$sanitized['interests'] = $interests;
 
 		// Update data in database
 		update_post_meta( $post->ID, 'mailchimp_details', $sanitized );
