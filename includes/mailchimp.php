@@ -169,7 +169,7 @@
 		if ( empty( filter_var( $_POST['mailchimp_email'], FILTER_VALIDATE_EMAIL ) ) ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_bad_email'], 'post' );
 			mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-			wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
+			wp_safe_redirect( $status, 302 );
 			exit;
 		}
 
@@ -184,7 +184,7 @@
 		if ( $signup === 'error' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_failed'], 'post' );
 			mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-			wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
+			wp_safe_redirect( $status, 302 );
 			exit;
 		}
 
@@ -192,7 +192,7 @@
 		if ( $signup === 'new' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_pending'], 'post' );
 			mailchimp_set_session( 'mailchimp_success', true );
-			wp_safe_redirect( add_query_arg('mc-status', 'success', $status), 302 );
+			wp_safe_redirect( $status, 302 );
 			exit;
 		}
 
@@ -200,14 +200,14 @@
 		if ( $signup === 'updated' ) {
 			mailchimp_set_session( 'mailchimp_status', $details['alert_success'], 'post' );
 			mailchimp_set_session( 'mailchimp_success', true );
-			wp_safe_redirect( add_query_arg('mc-status', 'success', $status), 302 );
+			wp_safe_redirect( $status, 302 );
 			exit;
 		}
 
 		// If sign up fails, throw error
 		mailchimp_set_session( 'mailchimp_status', $details['alert_failed'], 'post' );
 		mailchimp_set_session( 'mailchimp_email', $_POST['mailchimp_email'], 'post' );
-		wp_safe_redirect( add_query_arg('mc-status', 'error', $status), 302 );
+		wp_safe_redirect( $status, 302 );
 		exit;
 
 	}
