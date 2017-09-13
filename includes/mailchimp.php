@@ -13,11 +13,6 @@
 			'placeholder' => '',
 		), $atts );
 
-		// Prevent this content from caching
-		if (!empty($_GET['mc-status']) && !defined('DONOTCACHEPAGE')) {
-			define('DONOTCACHEPAGE', TRUE);
-		}
-
 		// Status
 		$status = mailchimp_get_session( 'mailchimp_status', true );
 		$success = mailchimp_get_session( 'mailchimp_success', true );
@@ -39,7 +34,7 @@
 				'<input type="hidden" name="mailchimp_id" value="' . esc_attr( $mailchimp['id'] ) . '">' .
 				'<input type="hidden" id="mailchimp_tarpit_time" name="mailchimp_tarpit_time" value="' . esc_attr( current_time( 'timestamp' ) ) . '">' .
 				$tarpit .
-				wp_nonce_field( 'mailchimp_form_nonce', 'mailchimp_form_process', true, false ) .
+				'<input type="hidden" id="mailchimp_submit" name="mailchimp_submit" value="' . get_site_option( 'gmt_mailchimp_submit_hash' ) . '">' .
 				'<label class="mailchimp-form-label" for="mailchimp_email">' . __( 'Email Address', 'mailchimp' ) . '</label>' .
 				'<div class="mailchimp-form-row">' .
 					'<div class="mailchimp-form-grid-input">' .
@@ -136,17 +131,15 @@
 	function mailchimp_process_form() {
 
 		// Check that form was submitted
-		if ( !isset( $_POST['mailchimp_form_process'] ) ) return;
+		if ( !isset( $_POST['mailchimp_submit'] ) ) return;
 
 		// Verify data came from proper screen
-		if ( !wp_verify_nonce( $_POST['mailchimp_form_process'], 'mailchimp_form_nonce' ) ) {
-			die( 'Security check' );
-		}
+		if ( strcmp( $_POST['mailchimp_submit'], get_site_option( 'gmt_mailchimp_submit_hash' ) ) !== 0 ) return;
 
 		// // Variables
 		$details = get_post_meta( $_POST['mailchimp_id'], 'mailchimp_details', true );
 		$referrer = mailchimp_get_url();
-		$status = $referrer . '#mailchimp-form-' . $_POST['mailchimp_id'];
+		$status = add_query_arg( 'gmt-mailchimp', 'submitted', $referrer . '#mailchimp-form-' . $_POST['mailchimp_id'] );
 
 		// Make sure form has an ID
 		if ( !isset( $_POST['mailchimp_id'] ) ) {
