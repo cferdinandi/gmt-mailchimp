@@ -5,14 +5,14 @@
  * Plugin URI: https://github.com/cferdinandi/gmt-mailchimp/
  * GitHub Plugin URI: https://github.com/cferdinandi/gmt-mailchimp/
  * Description: MailChimp integration for WordPress
- * Version: 2.4.3
+ * Version: 3.0.0
  * Author: Chris Ferdinandi
  * Author URI: http://gomakethings.com
  * License: GPLv3
  */
 
 // Define constants
-define( 'GMT_MAILCHIMP_VERSION', '2.4.3' );
+define( 'GMT_MAILCHIMP_VERSION', '3.0.0' );
 
 
 // Includes

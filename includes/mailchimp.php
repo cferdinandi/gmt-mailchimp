@@ -82,7 +82,7 @@
 				'Authorization' => 'Basic ' . base64_encode( 'mailchimp' . ':' . $options['mailchimp_api_key'] )
 			),
 			'body' => json_encode(array(
-				'status' => 'pending',
+				'status' => ( array_key_exists('double_optin', $form['details']) && $form['details']['double_optin'] === 'on' ? 'pending' : 'subscribed' ),
 				'email_address' => $form['email'],
 				'interests' => $interests,
 			)),
@@ -136,7 +136,7 @@
 		// Verify data came from proper screen
 		if ( strcmp( $_POST['mailchimp_submit'], get_site_option( 'gmt_mailchimp_submit_hash' ) ) !== 0 ) return;
 
-		// // Variables
+		// Variables
 		$details = get_post_meta( $_POST['mailchimp_id'], 'mailchimp_details', true );
 		$referrer = mailchimp_get_url();
 		$status = add_query_arg( 'gmt-mailchimp-form', 'submitted', $referrer . '#mailchimp-form-' . $_POST['mailchimp_id'] );
@@ -190,7 +190,8 @@
 
 		// If new member was added
 		if ( $signup === 'new' ) {
-			mailchimp_set_session( 'mailchimp_status', $details['alert_pending'], 'post' );
+			$alert = ( array_key_exists('double_optin', $form['details']) && $form['details']['double_optin'] === $details['alert_pending'] ? 'pending' : $details['alert_success'] );
+			mailchimp_set_session( 'mailchimp_status', $alert, 'post' );
 			mailchimp_set_session( 'mailchimp_success', true );
 			wp_safe_redirect( $status, 302 );
 			exit;
