@@ -20,6 +20,7 @@
 			// MailChimp Info
 			'list_id' => $options['mailchimp_list_id'],
 			'interests' => array(),
+			'double_optin' => 'off',
 
 			// Alerts
 			'alert_bad_email' => 'Please use a valid email address.',
@@ -124,6 +125,14 @@
 				<div>
 					<label for="mailchimp_list_id"><?php _e( 'List ID', 'mailchimp' ); ?></label>
 					<input type="text" class="large-text" id="mailchimp_list_id" name="mailchimp[list_id]" value="<?php echo esc_attr( $details['list_id'] ); ?>">
+				</div>
+				<br>
+
+				<div>
+					<label for="mailchimp_double_optin">
+						<input type="checkbox" id="mailchimp_double_optin" name="mailchimp[double_optin]" <?php checked('on', $details['double_optin']); ?>>
+						<?php _e( 'Enable double opt-in', 'mailchimp' ); ?>
+					</label>
 				</div>
 				<br>
 
