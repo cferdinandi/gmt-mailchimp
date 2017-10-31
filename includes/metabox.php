@@ -209,6 +209,10 @@
 				}
 				continue;
 			}
+			if ( $key === 'double_optin' ) {
+				$sanitized[$key] = 'on';
+				continue;
+			}
 			$sanitized[$key] = wp_filter_post_kses( $detail );
 		}
 		$sanitized['interests'] = $interests;
