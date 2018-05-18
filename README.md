@@ -1,4 +1,7 @@
-# GMT MailChimp
+# [DEPRECATED] GMT MailChimp
+
+*__Deprecation Notice:__ This plugin has been deprecated and is no longer maintained or updated.*
+
 Create barebones MailChimp forms that let you add people to lists and interest groups within those lists (optional). GMT MailChimp forms *only* include an email field for maximum conversion.
 
 [Download GMT MailChimp](https://github.com/cferdinandi/gmt-mailchimp/archive/master.zip)
